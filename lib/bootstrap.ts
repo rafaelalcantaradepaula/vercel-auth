@@ -6,9 +6,8 @@ import {
   DEFAULT_ADMIN_LOGIN,
   DEFAULT_ADMIN_NAME,
   DEFAULT_ADMIN_PASSWORD,
-  LEGACY_DEFAULT_ADMIN_PASSWORD,
 } from "@/lib/auth/default-admin";
-import { hashPassword, verifyPassword } from "@/lib/auth/password";
+import { hashPassword } from "@/lib/auth/password";
 import { appConfig } from "@/lib/app-config";
 import { withDbClient } from "@/lib/db";
 
@@ -32,11 +31,6 @@ export type AppDataRow = {
 export type DatabaseSnapshot = {
   appMeta: AppMetaRow[];
   appData: AppDataRow[];
-};
-
-type ExistingAuthUserRow = {
-  id: string;
-  password_hash: string;
 };
 
 export type DatabaseState = {
@@ -310,8 +304,6 @@ async function seedAuthData(client: PoolClient) {
     `,
     [DEFAULT_ADMIN_LOGIN, DEFAULT_ADMIN_NAME, adminRoleId, passwordHash],
   );
-
-  await migrateLegacyDefaultAdminPassword(client);
 }
 
 async function upsertAuthRole(
@@ -348,45 +340,6 @@ async function updateStoredDbVersion(client: PoolClient, dbVersion: string) {
           int_value = excluded.int_value
     `,
     [dbVersion, versionAsNumber, versionAsInt],
-  );
-}
-
-async function migrateLegacyDefaultAdminPassword(client: PoolClient) {
-  const existingAdminResult = await client.query<ExistingAuthUserRow>(
-    `
-      select id::text as id, password_hash
-      from auth_users
-      where login = $1
-      limit 1
-    `,
-    [DEFAULT_ADMIN_LOGIN],
-  );
-
-  const existingAdmin = existingAdminResult.rows[0];
-
-  if (!existingAdmin?.password_hash) {
-    return;
-  }
-
-  const usesLegacyDefaultPassword = await verifyPassword(
-    LEGACY_DEFAULT_ADMIN_PASSWORD,
-    existingAdmin.password_hash,
-  );
-
-  if (!usesLegacyDefaultPassword) {
-    return;
-  }
-
-  const updatedPasswordHash = await hashPassword(DEFAULT_ADMIN_PASSWORD);
-
-  await client.query(
-    `
-      update auth_users
-      set password_hash = $2,
-          updated_at = current_timestamp
-      where id = $1::bigint
-    `,
-    [existingAdmin.id, updatedPasswordHash],
   );
 }
 

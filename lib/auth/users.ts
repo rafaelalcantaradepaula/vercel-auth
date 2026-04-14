@@ -1,14 +1,7 @@
 import "server-only";
 
-import type { PoolClient } from "pg";
-
-import {
-  DEFAULT_ADMIN_LOGIN,
-  DEFAULT_ADMIN_PASSWORD,
-  LEGACY_DEFAULT_ADMIN_PASSWORD,
-} from "@/lib/auth/default-admin";
 import { normalizeEmailAddress } from "@/lib/auth/identity";
-import { hashPassword, verifyPassword } from "@/lib/auth/password";
+import { verifyPassword } from "@/lib/auth/password";
 import { normalizeRoutePermissions } from "@/lib/auth/routes";
 import { withDbClient } from "@/lib/db";
 
@@ -29,42 +22,6 @@ type AuthUserLoginRow = {
   role_name: string;
   permissions: string[] | null;
 };
-
-async function upgradeLegacyDefaultAdminPasswordIfNeeded(
-  client: PoolClient,
-  user: AuthUserLoginRow,
-  attemptedPassword: string,
-) {
-  if (
-    normalizeEmailAddress(user.login) !== DEFAULT_ADMIN_LOGIN ||
-    attemptedPassword !== DEFAULT_ADMIN_PASSWORD
-  ) {
-    return false;
-  }
-
-  const usesLegacyDefaultPassword = await verifyPassword(
-    LEGACY_DEFAULT_ADMIN_PASSWORD,
-    user.password_hash,
-  );
-
-  if (!usesLegacyDefaultPassword) {
-    return false;
-  }
-
-  const updatedPasswordHash = await hashPassword(DEFAULT_ADMIN_PASSWORD);
-
-  await client.query(
-    `
-      update auth_users
-      set password_hash = $2,
-          updated_at = current_timestamp
-      where id = $1::bigint
-    `,
-    [user.user_id, updatedPasswordHash],
-  );
-
-  return true;
-}
 
 export async function authenticateUserLogin(
   emailAddress: string,
@@ -97,11 +54,7 @@ export async function authenticateUserLogin(
       return null;
     }
 
-    let passwordMatches = await verifyPassword(password, user.password_hash);
-
-    if (!passwordMatches) {
-      passwordMatches = await upgradeLegacyDefaultAdminPasswordIfNeeded(client, user, password);
-    }
+    const passwordMatches = await verifyPassword(password, user.password_hash);
 
     if (!passwordMatches) {
       return null;
