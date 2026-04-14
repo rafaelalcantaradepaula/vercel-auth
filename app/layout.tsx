@@ -61,12 +61,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                     </div>
                     <span className="toolbar-session__meta">{authSession.roleName}</span>
                   </div>
-                  <Link href="/logout" className="toolbar-control">
+                  <Link href="/logout" prefetch={false} className="toolbar-control">
                     Sair
                   </Link>
                 </>
               ) : (
-                <Link href="/login" className="toolbar-control">
+                <Link href="/login" prefetch={false} className="toolbar-control">
                   Entrar
                 </Link>
               )}

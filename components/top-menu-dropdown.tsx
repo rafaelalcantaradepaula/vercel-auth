@@ -79,6 +79,7 @@ export function TopMenuDropdown({ items }: { items: TopMenuItem[] }) {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 className={`toolbar-menu__link ${isActive ? "toolbar-menu__link--active" : ""}`}
                 role="menuitem"
               >

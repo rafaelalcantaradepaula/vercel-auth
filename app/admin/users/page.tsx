@@ -99,10 +99,10 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
             Sua sessao atual nao possui permissao para criar, editar ou redefinir senhas.
           </p>
           <div className="notice-panel__actions auth-link-row">
-            <Link href="/" className="app-button app-button--auto">
+            <Link href="/" prefetch={false} className="app-button app-button--auto">
               Voltar ao inicio
             </Link>
-            <Link href="/logout" className="app-button app-button--auto">
+            <Link href="/logout" prefetch={false} className="app-button app-button--auto">
               Encerrar sessao
             </Link>
           </div>
@@ -141,10 +141,10 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
             </div>
           </div>
           <div className="admin-summary-actions auth-link-row">
-            <Link href="/admin/roles" className="app-button app-button--auto">
+            <Link href="/admin/roles" prefetch={false} className="app-button app-button--auto">
               Abrir roles
             </Link>
-            <Link href="/" className="app-button app-button--auto">
+            <Link href="/" prefetch={false} className="app-button app-button--auto">
               Voltar ao inicio
             </Link>
           </div>
@@ -388,10 +388,10 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
           <h1 className="notice-panel__title">A tela de usuarios nao pode ser carregada agora.</h1>
           <p className="notice-panel__copy">{message}</p>
           <div className="notice-panel__actions auth-link-row">
-            <Link href="/db_bootstrap" className="app-button app-button--auto">
+            <Link href="/db_bootstrap" prefetch={false} className="app-button app-button--auto">
               Abrir DB Bootstrap
             </Link>
-            <Link href="/" className="app-button app-button--auto">
+            <Link href="/" prefetch={false} className="app-button app-button--auto">
               Voltar ao inicio
             </Link>
           </div>
