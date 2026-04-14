@@ -3,11 +3,11 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
+import { loginAction } from "@/app/login/actions";
 import {
   initialLoginActionState,
-  loginAction,
   type LoginActionState,
-} from "@/app/login/actions";
+} from "@/app/login/state";
 
 function LoginSubmitButton() {
   const { pending } = useFormStatus();

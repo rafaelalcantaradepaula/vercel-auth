@@ -3,22 +3,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import type { LoginActionState } from "@/app/login/state";
 import { isValidEmailAddress, normalizeEmailAddress } from "@/lib/auth/identity";
 import {
   createSignedAuthSessionToken,
   getAuthSessionCookieDescriptor,
 } from "@/lib/auth/session";
 import { authenticateUserLogin } from "@/lib/auth/users";
-
-export type LoginActionState = {
-  errorMessage: string | null;
-  submittedEmail: string;
-};
-
-export const initialLoginActionState: LoginActionState = {
-  errorMessage: null,
-  submittedEmail: "",
-};
 
 const INVALID_CREDENTIALS_MESSAGE = "Email ou senha invalidos.";
 const AUTH_UNAVAILABLE_MESSAGE = "Autenticacao indisponivel no momento.";
