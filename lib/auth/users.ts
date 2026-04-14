@@ -1,7 +1,7 @@
 import "server-only";
 
 import { normalizeEmailAddress } from "@/lib/auth/identity";
-import { verifyPassword } from "@/lib/auth/password";
+import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { normalizeRoutePermissions } from "@/lib/auth/routes";
 import { withDbClient } from "@/lib/db";
 
@@ -11,6 +11,17 @@ export type AuthenticatedUserSessionData = {
   name: string;
   roleName: string;
   permissions: string[];
+};
+
+export type LoginPasswordDebugInfo = {
+  normalizedLogin: string;
+  generatedHash: string | null;
+  userFound: boolean;
+  storedHash: string | null;
+  passwordMatchesStoredHash: boolean;
+  userIsActive: boolean | null;
+  roleName: string | null;
+  notes: string[];
 };
 
 type AuthUserLoginRow = {
@@ -81,6 +92,52 @@ export async function authenticateUserLogin(
       name: user.name.trim(),
       roleName: user.role_name.trim(),
       permissions: normalizeRoutePermissions(user.permissions ?? []),
+    };
+  });
+}
+
+export async function getLoginPasswordDebugInfo(
+  emailAddress: string,
+  password: string,
+): Promise<LoginPasswordDebugInfo> {
+  const normalizedEmail = normalizeEmailAddress(emailAddress);
+  const generatedHash = password ? await hashPassword(password) : null;
+
+  return withDbClient(async (client) => {
+    const result = await client.query<AuthUserLoginRow>(
+      `
+        select
+          u.id::text as user_id,
+          u.login,
+          u.name,
+          u.password_hash,
+          u.is_active,
+          r.name as role_name,
+          r.permissions
+        from auth_users u
+        inner join auth_roles r on r.id = u.role_id
+        where u.login = $1
+        limit 1
+      `,
+      [normalizedEmail],
+    );
+
+    const user = result.rows[0];
+
+    return {
+      normalizedLogin: normalizedEmail,
+      generatedHash,
+      userFound: Boolean(user),
+      storedHash: user?.password_hash ?? null,
+      passwordMatchesStoredHash: user?.password_hash
+        ? await verifyPassword(password, user.password_hash)
+        : false,
+      userIsActive: user?.is_active ?? null,
+      roleName: user?.role_name?.trim() ?? null,
+      notes: [
+        "O hash gerado pela aplicacao usa salt aleatorio no scrypt, entao um hash novo nao fica igual ao hash salvo no banco por comparacao direta.",
+        "Para validar a senha, o campo mais importante e 'passwordMatchesStoredHash'.",
+      ],
     };
   });
 }

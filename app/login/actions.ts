@@ -4,15 +4,49 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import type { LoginActionState } from "@/app/login/state";
+import { shouldExposeLoginDebug } from "@/lib/auth/config";
 import { isValidEmailAddress, normalizeEmailAddress } from "@/lib/auth/identity";
 import {
   createSignedAuthSessionToken,
   getAuthSessionCookieDescriptor,
 } from "@/lib/auth/session";
-import { authenticateUserLogin } from "@/lib/auth/users";
+import {
+  authenticateUserLogin,
+  getLoginPasswordDebugInfo,
+} from "@/lib/auth/users";
 
 const INVALID_CREDENTIALS_MESSAGE = "Email ou senha invalidos.";
 const AUTH_UNAVAILABLE_MESSAGE = "Autenticacao indisponivel no momento.";
+
+async function buildLoginFailureState(
+  errorMessage: string,
+  rawEmail: string,
+  password: string,
+): Promise<LoginActionState> {
+  const submittedEmail = normalizeEmailAddress(rawEmail);
+
+  if (!shouldExposeLoginDebug()) {
+    return {
+      errorMessage,
+      submittedEmail,
+      debugInfo: null,
+    };
+  }
+
+  try {
+    return {
+      errorMessage,
+      submittedEmail,
+      debugInfo: await getLoginPasswordDebugInfo(submittedEmail, password),
+    };
+  } catch {
+    return {
+      errorMessage,
+      submittedEmail,
+      debugInfo: null,
+    };
+  }
+}
 
 export async function loginAction(
   _previousState: LoginActionState,
@@ -23,20 +57,14 @@ export async function loginAction(
   const submittedEmail = normalizeEmailAddress(rawEmail);
 
   if (!isValidEmailAddress(rawEmail) || !password.trim()) {
-    return {
-      errorMessage: INVALID_CREDENTIALS_MESSAGE,
-      submittedEmail,
-    };
+    return buildLoginFailureState(INVALID_CREDENTIALS_MESSAGE, rawEmail, password);
   }
 
   try {
     const authenticatedUser = await authenticateUserLogin(submittedEmail, password);
 
     if (!authenticatedUser) {
-      return {
-        errorMessage: INVALID_CREDENTIALS_MESSAGE,
-        submittedEmail,
-      };
+      return buildLoginFailureState(INVALID_CREDENTIALS_MESSAGE, rawEmail, password);
     }
 
     const token = await createSignedAuthSessionToken(authenticatedUser);
@@ -45,10 +73,7 @@ export async function loginAction(
 
     cookieStore.set(cookieDescriptor);
   } catch {
-    return {
-      errorMessage: AUTH_UNAVAILABLE_MESSAGE,
-      submittedEmail,
-    };
+    return buildLoginFailureState(AUTH_UNAVAILABLE_MESSAGE, rawEmail, password);
   }
 
   redirect("/");

@@ -41,6 +41,10 @@ export function useSecureAuthCookies() {
   return process.env.NODE_ENV === "production";
 }
 
+export function shouldExposeLoginDebug() {
+  return process.env.AUTH_DEBUG_LOGIN_HASH?.trim() === "true" || process.env.NODE_ENV !== "production";
+}
+
 export function getAuthEnvironmentStatus(): AuthEnvironmentStatus {
   const sessionSecret = readRawSessionSecret();
 
