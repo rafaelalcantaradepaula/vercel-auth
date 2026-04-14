@@ -1,7 +1,7 @@
 const AUTH_SESSION_COOKIE_NAME = "vercel-sample-app-auth-session";
 const DEFAULT_AUTH_SESSION_TTL_HOURS = 12;
 const MIN_AUTH_SESSION_SECRET_LENGTH = 32;
-const AUTH_DEBUG_LOGIN_HASH=true;
+export const AUTH_DEBUG_LOGIN_HASH = true;
 
 export type AuthEnvironmentStatus = {
   cookieName: string;
@@ -43,7 +43,11 @@ export function useSecureAuthCookies() {
 }
 
 export function shouldExposeLoginDebug() {
-  return process.env.AUTH_DEBUG_LOGIN_HASH?.trim() === "true" || process.env.NODE_ENV !== "production";
+  return (
+    AUTH_DEBUG_LOGIN_HASH ||
+    process.env.AUTH_DEBUG_LOGIN_HASH?.trim() === "true" ||
+    process.env.NODE_ENV !== "production"
+  );
 }
 
 export function getAuthEnvironmentStatus(): AuthEnvironmentStatus {

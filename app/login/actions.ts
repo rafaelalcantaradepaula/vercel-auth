@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import type { LoginActionState } from "@/app/login/state";
 import { shouldExposeLoginDebug } from "@/lib/auth/config";
 import { isValidEmailAddress, normalizeEmailAddress } from "@/lib/auth/identity";
+import { hashPassword } from "@/lib/auth/password";
 import {
   createSignedAuthSessionToken,
   getAuthSessionCookieDescriptor,
@@ -39,11 +40,32 @@ async function buildLoginFailureState(
       submittedEmail,
       debugInfo: await getLoginPasswordDebugInfo(submittedEmail, password),
     };
-  } catch {
+  } catch (error) {
+    let generatedHash: string | null = null;
+
+    try {
+      generatedHash = password ? await hashPassword(password) : null;
+    } catch {
+      generatedHash = null;
+    }
+
     return {
       errorMessage,
       submittedEmail,
-      debugInfo: null,
+      debugInfo: {
+        normalizedLogin: submittedEmail,
+        generatedHash,
+        userFound: false,
+        storedHash: null,
+        passwordMatchesStoredHash: false,
+        userIsActive: null,
+        roleName: null,
+        debugError: error instanceof Error ? error.message : "Unknown login debug error.",
+        notes: [
+          "Nao foi possivel consultar o banco para completar o debug desta tentativa.",
+          "Se o banco foi recriado, confirme se /db_bootstrap foi executado antes do login.",
+        ],
+      },
     };
   }
 }

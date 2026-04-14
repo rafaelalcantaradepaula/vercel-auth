@@ -21,6 +21,7 @@ export type LoginPasswordDebugInfo = {
   passwordMatchesStoredHash: boolean;
   userIsActive: boolean | null;
   roleName: string | null;
+  debugError: string | null;
   notes: string[];
 };
 
@@ -134,6 +135,7 @@ export async function getLoginPasswordDebugInfo(
         : false,
       userIsActive: user?.is_active ?? null,
       roleName: user?.role_name?.trim() ?? null,
+      debugError: null,
       notes: [
         "O hash gerado pela aplicacao usa salt aleatorio no scrypt, entao um hash novo nao fica igual ao hash salvo no banco por comparacao direta.",
         "Para validar a senha, o campo mais importante e 'passwordMatchesStoredHash'.",

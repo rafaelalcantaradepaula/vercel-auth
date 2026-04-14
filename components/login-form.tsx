@@ -121,6 +121,11 @@ export function LoginForm() {
             </div>
 
             <div className="auth-debug-notes">
+              {state.debugInfo.debugError ? (
+                <div className="warning-panel auth-feedback" role="alert">
+                  Erro de debug: {state.debugInfo.debugError}
+                </div>
+              ) : null}
               {state.debugInfo.notes.map((note) => (
                 <p key={note} className="panel-message auth-debug-note">
                   {note}
