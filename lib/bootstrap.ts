@@ -2,16 +2,18 @@ import "server-only";
 
 import type { PoolClient } from "pg";
 
+import {
+  DEFAULT_ADMIN_LOGIN,
+  DEFAULT_ADMIN_NAME,
+  DEFAULT_ADMIN_PASSWORD,
+  LEGACY_DEFAULT_ADMIN_PASSWORD,
+} from "@/lib/auth/default-admin";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { appConfig } from "@/lib/app-config";
 import { withDbClient } from "@/lib/db";
 
 const ADMIN_ROLE_NAME = "adm";
 const BASIC_ROLE_NAME = "basic";
-const DEFAULT_ADMIN_LOGIN = "adm@vercel";
-const DEFAULT_ADMIN_NAME = "Administrador";
-const DEFAULT_ADMIN_PASSWORD = "s4mp13Change";
-const LEGACY_DEFAULT_ADMIN_PASSWORD = "galo1908#";
 
 export type AppMetaRow = {
   prop: string;
