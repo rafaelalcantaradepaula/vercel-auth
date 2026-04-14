@@ -1,6 +1,7 @@
 const AUTH_SESSION_COOKIE_NAME = "vercel-sample-app-auth-session";
 const DEFAULT_AUTH_SESSION_TTL_HOURS = 12;
 const MIN_AUTH_SESSION_SECRET_LENGTH = 32;
+const AUTH_DEBUG_LOGIN_HASH=true;
 
 export type AuthEnvironmentStatus = {
   cookieName: string;
