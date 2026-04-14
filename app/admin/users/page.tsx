@@ -140,6 +140,14 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
               <p className="summary-card__value">{pageData.summary.adminUsers}</p>
             </div>
           </div>
+          <div className="admin-summary-actions auth-link-row">
+            <Link href="/admin/roles" className="app-button app-button--auto">
+              Abrir roles
+            </Link>
+            <Link href="/" className="app-button app-button--auto">
+              Voltar ao inicio
+            </Link>
+          </div>
         </section>
 
         {flashMessage ? (
