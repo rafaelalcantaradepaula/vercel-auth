@@ -29,9 +29,7 @@ export async function GET() {
   const ok =
     environment.hasDatabaseUrl &&
     databaseReachable &&
-    Boolean(databaseState?.hasAppMetaTable) &&
-    Boolean(databaseState?.hasAppDataTable) &&
-    Boolean(databaseState?.matchesDbVersion);
+    Boolean(databaseState?.matchesConfiguredSchema);
 
   return NextResponse.json(
     {

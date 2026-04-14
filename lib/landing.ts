@@ -21,7 +21,7 @@ function normalizeText(value: string | null) {
 export async function isLandingPageReady() {
   try {
     const state = await inspectDatabaseState();
-    return state.hasAppMetaTable && state.hasAppDataTable && state.matchesDbVersion;
+    return state.matchesConfiguredSchema;
   } catch {
     return false;
   }

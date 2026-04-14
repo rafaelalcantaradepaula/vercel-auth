@@ -2,7 +2,7 @@ const defaultAppConfig = {
   appName: "Vercel NextJs sample",
   appAuthor: "Your Full Name",
   authorEmail: "yourEmail@here",
-  dbVersion: "1.0",
+  dbVersion: "1.1",
 } as const;
 
 export const appConfig = {
