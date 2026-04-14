@@ -129,7 +129,10 @@ function validatePasswordOrThrow(value: string) {
 
 function validateEmailOrThrow(value: string) {
   if (!isValidEmailAddress(value)) {
-    throw new AdminUsersError("INVALID_EMAIL", "User login must be a valid email address.");
+    throw new AdminUsersError(
+      "INVALID_EMAIL",
+      "User login must be a valid email-style identifier.",
+    );
   }
 
   return normalizeEmailAddress(value);

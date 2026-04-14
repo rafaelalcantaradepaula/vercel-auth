@@ -23,6 +23,7 @@ async function buildLoginFailureState(
   errorMessage: string,
   rawEmail: string,
   password: string,
+  actionStage: string,
 ): Promise<LoginActionState> {
   const submittedEmail = normalizeEmailAddress(rawEmail);
 
@@ -38,7 +39,10 @@ async function buildLoginFailureState(
     return {
       errorMessage,
       submittedEmail,
-      debugInfo: await getLoginPasswordDebugInfo(submittedEmail, password),
+      debugInfo: {
+        ...(await getLoginPasswordDebugInfo(submittedEmail, password)),
+        actionStage,
+      },
     };
   } catch (error) {
     let generatedHash: string | null = null;
@@ -60,6 +64,8 @@ async function buildLoginFailureState(
         passwordMatchesStoredHash: false,
         userIsActive: null,
         roleName: null,
+        authDecision: "debug-error",
+        actionStage,
         debugError: error instanceof Error ? error.message : "Unknown login debug error.",
         notes: [
           "Nao foi possivel consultar o banco para completar o debug desta tentativa.",
@@ -79,14 +85,19 @@ export async function loginAction(
   const submittedEmail = normalizeEmailAddress(rawEmail);
 
   if (!isValidEmailAddress(rawEmail) || !password.trim()) {
-    return buildLoginFailureState(INVALID_CREDENTIALS_MESSAGE, rawEmail, password);
+    return buildLoginFailureState(INVALID_CREDENTIALS_MESSAGE, rawEmail, password, "input-validation");
   }
 
   try {
     const authenticatedUser = await authenticateUserLogin(submittedEmail, password);
 
     if (!authenticatedUser) {
-      return buildLoginFailureState(INVALID_CREDENTIALS_MESSAGE, rawEmail, password);
+      return buildLoginFailureState(
+        INVALID_CREDENTIALS_MESSAGE,
+        rawEmail,
+        password,
+        "authenticateUserLogin-returned-null",
+      );
     }
 
     const token = await createSignedAuthSessionToken(authenticatedUser);
@@ -95,7 +106,12 @@ export async function loginAction(
 
     cookieStore.set(cookieDescriptor);
   } catch {
-    return buildLoginFailureState(AUTH_UNAVAILABLE_MESSAGE, rawEmail, password);
+    return buildLoginFailureState(
+      AUTH_UNAVAILABLE_MESSAGE,
+      rawEmail,
+      password,
+      "session-setup-error",
+    );
   }
 
   redirect("/");

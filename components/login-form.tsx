@@ -108,6 +108,18 @@ export function LoginForm() {
                   {state.debugInfo.roleName ?? "-"}
                 </p>
               </div>
+              <div className="summary-card">
+                <p className="summary-card__label">Decisao auth</p>
+                <p className="summary-card__value auth-debug-value">
+                  {state.debugInfo.authDecision}
+                </p>
+              </div>
+              <div className="summary-card">
+                <p className="summary-card__label">Etapa da action</p>
+                <p className="summary-card__value auth-debug-value">
+                  {state.debugInfo.actionStage ?? "-"}
+                </p>
+              </div>
             </div>
 
             <div className="auth-debug-block">

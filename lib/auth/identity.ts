@@ -1,4 +1,4 @@
-const SIMPLE_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const SIMPLE_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+$/;
 const MAX_LOGIN_LENGTH = 120;
 
 export function normalizeEmailAddress(value: string) {

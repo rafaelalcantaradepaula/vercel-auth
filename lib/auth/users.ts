@@ -21,6 +21,8 @@ export type LoginPasswordDebugInfo = {
   passwordMatchesStoredHash: boolean;
   userIsActive: boolean | null;
   roleName: string | null;
+  authDecision: "success" | "user-not-found" | "inactive-user" | "password-mismatch" | "debug-error";
+  actionStage: string | null;
   debugError: string | null;
   notes: string[];
 };
@@ -35,10 +37,17 @@ type AuthUserLoginRow = {
   permissions: string[] | null;
 };
 
-export async function authenticateUserLogin(
+type LoginAttemptResolution = {
+  normalizedLogin: string;
+  user: AuthUserLoginRow | null;
+  passwordMatchesStoredHash: boolean;
+  authDecision: "success" | "user-not-found" | "inactive-user" | "password-mismatch";
+};
+
+async function resolveLoginAttempt(
   emailAddress: string,
   password: string,
-): Promise<AuthenticatedUserSessionData | null> {
+): Promise<LoginAttemptResolution> {
   const normalizedEmail = normalizeEmailAddress(emailAddress);
 
   return withDbClient(async (client) => {
@@ -60,18 +69,49 @@ export async function authenticateUserLogin(
       [normalizedEmail],
     );
 
-    const user = result.rows[0];
+    const user = result.rows[0] ?? null;
 
-    if (!user?.is_active) {
-      return null;
+    if (!user) {
+      return {
+        normalizedLogin: normalizedEmail,
+        user,
+        passwordMatchesStoredHash: false,
+        authDecision: "user-not-found",
+      };
     }
 
-    const passwordMatches = await verifyPassword(password, user.password_hash);
-
-    if (!passwordMatches) {
-      return null;
+    if (!user.is_active) {
+      return {
+        normalizedLogin: normalizedEmail,
+        user,
+        passwordMatchesStoredHash: false,
+        authDecision: "inactive-user",
+      };
     }
 
+    const passwordMatchesStoredHash = await verifyPassword(password, user.password_hash);
+
+    return {
+      normalizedLogin: normalizedEmail,
+      user,
+      passwordMatchesStoredHash,
+      authDecision: passwordMatchesStoredHash ? "success" : "password-mismatch",
+    };
+  });
+}
+
+export async function authenticateUserLogin(
+  emailAddress: string,
+  password: string,
+): Promise<AuthenticatedUserSessionData | null> {
+  const loginAttempt = await resolveLoginAttempt(emailAddress, password);
+  const user = loginAttempt.user;
+
+  if (loginAttempt.authDecision !== "success" || !user) {
+    return null;
+  }
+
+  return withDbClient(async (client) => {
     await client.query(
       `
         update auth_users
@@ -101,45 +141,25 @@ export async function getLoginPasswordDebugInfo(
   emailAddress: string,
   password: string,
 ): Promise<LoginPasswordDebugInfo> {
-  const normalizedEmail = normalizeEmailAddress(emailAddress);
+  const loginAttempt = await resolveLoginAttempt(emailAddress, password);
+  const normalizedEmail = loginAttempt.normalizedLogin;
   const generatedHash = password ? await hashPassword(password) : null;
+  const user = loginAttempt.user;
 
-  return withDbClient(async (client) => {
-    const result = await client.query<AuthUserLoginRow>(
-      `
-        select
-          u.id::text as user_id,
-          u.login,
-          u.name,
-          u.password_hash,
-          u.is_active,
-          r.name as role_name,
-          r.permissions
-        from auth_users u
-        inner join auth_roles r on r.id = u.role_id
-        where u.login = $1
-        limit 1
-      `,
-      [normalizedEmail],
-    );
-
-    const user = result.rows[0];
-
-    return {
-      normalizedLogin: normalizedEmail,
-      generatedHash,
-      userFound: Boolean(user),
-      storedHash: user?.password_hash ?? null,
-      passwordMatchesStoredHash: user?.password_hash
-        ? await verifyPassword(password, user.password_hash)
-        : false,
-      userIsActive: user?.is_active ?? null,
-      roleName: user?.role_name?.trim() ?? null,
-      debugError: null,
-      notes: [
-        "O hash gerado pela aplicacao usa salt aleatorio no scrypt, entao um hash novo nao fica igual ao hash salvo no banco por comparacao direta.",
-        "Para validar a senha, o campo mais importante e 'passwordMatchesStoredHash'.",
-      ],
-    };
-  });
+  return {
+    normalizedLogin: normalizedEmail,
+    generatedHash,
+    userFound: Boolean(user),
+    storedHash: user?.password_hash ?? null,
+    passwordMatchesStoredHash: loginAttempt.passwordMatchesStoredHash,
+    userIsActive: user?.is_active ?? null,
+    roleName: user?.role_name?.trim() ?? null,
+    authDecision: loginAttempt.authDecision,
+    actionStage: null,
+    debugError: null,
+    notes: [
+      "O hash gerado pela aplicacao usa salt aleatorio no scrypt, entao um hash novo nao fica igual ao hash salvo no banco por comparacao direta.",
+      "Para validar a senha, o campo mais importante e 'passwordMatchesStoredHash'.",
+    ],
+  };
 }

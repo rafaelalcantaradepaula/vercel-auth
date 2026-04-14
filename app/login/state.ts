@@ -6,6 +6,8 @@ export type LoginPasswordDebugInfo = {
   passwordMatchesStoredHash: boolean;
   userIsActive: boolean | null;
   roleName: string | null;
+  authDecision: "success" | "user-not-found" | "inactive-user" | "password-mismatch" | "debug-error";
+  actionStage: string | null;
   debugError: string | null;
   notes: string[];
 };
