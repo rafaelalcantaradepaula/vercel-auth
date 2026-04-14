@@ -9,7 +9,7 @@ import {
 import {
   getExpiredAuthSessionCookieDescriptor,
   readAuthSessionToken,
-  verifySignedAuthSessionToken,
+  readAuthSessionPayloadWithoutVerification,
 } from "@/lib/auth/session";
 
 function isApiRoute(pathname: string) {
@@ -66,13 +66,7 @@ export async function middleware(request: NextRequest) {
     return buildUnauthorizedResponse(request);
   }
 
-  let authSession: Awaited<ReturnType<typeof verifySignedAuthSessionToken>> | null = null;
-
-  try {
-    authSession = await verifySignedAuthSessionToken(sessionToken);
-  } catch {
-    authSession = null;
-  }
+  const authSession = readAuthSessionPayloadWithoutVerification(sessionToken);
 
   if (!authSession) {
     return attachExpiredSessionCookie(buildUnauthorizedResponse(request));

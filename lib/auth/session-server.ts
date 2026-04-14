@@ -20,12 +20,18 @@ export async function getCurrentAuthSession() {
   }
 }
 
-export async function requireAdminSession() {
+export async function requireAuthenticatedSession() {
   const authSession = await getCurrentAuthSession();
 
   if (!authSession) {
     redirect("/login");
   }
+
+  return authSession;
+}
+
+export async function requireAdminSession() {
+  const authSession = await requireAuthenticatedSession();
 
   if (authSession.roleName !== "adm") {
     redirect("/");

@@ -214,6 +214,45 @@ export async function verifySignedAuthSessionToken(
   };
 }
 
+export function readAuthSessionPayloadWithoutVerification(
+  token: string,
+  options?: {
+    now?: number;
+  },
+) {
+  const [encodedPayload, encodedSignature, ...extraParts] = token.split(".");
+
+  if (!encodedPayload || !encodedSignature || extraParts.length > 0) {
+    return null;
+  }
+
+  let parsedPayload: unknown;
+
+  try {
+    parsedPayload = JSON.parse(textDecoder.decode(decodeBase64Url(encodedPayload)));
+  } catch {
+    return null;
+  }
+
+  if (!isAuthSessionPayload(parsedPayload)) {
+    return null;
+  }
+
+  const now = options?.now ?? Date.now();
+
+  if (parsedPayload.expiresAt <= now) {
+    return null;
+  }
+
+  return {
+    ...parsedPayload,
+    login: normalizeEmailAddress(parsedPayload.login),
+    name: parsedPayload.name.trim(),
+    roleName: parsedPayload.roleName.trim(),
+    permissions: normalizeRoutePermissions(parsedPayload.permissions),
+  };
+}
+
 export function getAuthSessionCookieDescriptor(token: string): AuthSessionCookieDescriptor {
   const maxAge = getAuthSessionMaxAgeSeconds();
   const expires = new Date(Date.now() + maxAge * 1000);

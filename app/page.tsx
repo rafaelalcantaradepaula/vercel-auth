@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { AppDataCarousel } from "@/components/app-data-carousel";
+import { requireAuthenticatedSession } from "@/lib/auth/session-server";
 import { getDatabaseEnvironmentStatus } from "@/lib/db";
 import {
   getLandingPageData,
@@ -39,6 +40,8 @@ function getAccessWarning(params: Record<string, string | string[] | undefined>)
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
+  await requireAuthenticatedSession();
+
   const environmentStatus = getDatabaseEnvironmentStatus();
 
   if (!environmentStatus.hasDatabaseUrl) {
