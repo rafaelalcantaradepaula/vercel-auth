@@ -8,6 +8,7 @@ import { normalizeEmailAddress } from "@/lib/auth/identity";
 import { normalizeRoutePermissions } from "@/lib/auth/routes";
 
 const AUTH_SESSION_VERSION = 1;
+const ADMIN_ROLE_NAME = "adm";
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
@@ -115,14 +116,19 @@ async function verifyPayloadSignature(
 
 function createSessionPayload(input: AuthSessionInput, now: number): AuthSessionPayload {
   const maxAgeSeconds = getAuthSessionMaxAgeSeconds();
+  const normalizedRoleName = input.roleName.trim();
+  const normalizedRoleKey = normalizedRoleName.toLowerCase();
 
   return {
     version: AUTH_SESSION_VERSION,
     userId: input.userId,
     login: normalizeEmailAddress(input.login),
     name: input.name.trim(),
-    roleName: input.roleName.trim(),
-    permissions: normalizeRoutePermissions(input.permissions),
+    roleName: normalizedRoleName,
+    permissions:
+      normalizedRoleKey === ADMIN_ROLE_NAME
+        ? ["*"]
+        : normalizeRoutePermissions(input.permissions),
     issuedAt: now,
     expiresAt: now + maxAgeSeconds * 1000,
   };
@@ -149,6 +155,12 @@ function isAuthSessionPayload(value: unknown): value is AuthSessionPayload {
     typeof payload.expiresAt === "number" &&
     Number.isFinite(payload.expiresAt)
   );
+}
+
+function normalizeSessionPayloadPermissions(roleName: string, permissions: readonly string[]) {
+  return roleName.trim().toLowerCase() === ADMIN_ROLE_NAME
+    ? ["*"]
+    : normalizeRoutePermissions(permissions);
 }
 
 export async function createSignedAuthSessionToken(
@@ -210,7 +222,10 @@ export async function verifySignedAuthSessionToken(
     login: normalizeEmailAddress(parsedPayload.login),
     name: parsedPayload.name.trim(),
     roleName: parsedPayload.roleName.trim(),
-    permissions: normalizeRoutePermissions(parsedPayload.permissions),
+    permissions: normalizeSessionPayloadPermissions(
+      parsedPayload.roleName.trim(),
+      parsedPayload.permissions,
+    ),
   };
 }
 
@@ -249,7 +264,10 @@ export function readAuthSessionPayloadWithoutVerification(
     login: normalizeEmailAddress(parsedPayload.login),
     name: parsedPayload.name.trim(),
     roleName: parsedPayload.roleName.trim(),
-    permissions: normalizeRoutePermissions(parsedPayload.permissions),
+    permissions: normalizeSessionPayloadPermissions(
+      parsedPayload.roleName.trim(),
+      parsedPayload.permissions,
+    ),
   };
 }
 
