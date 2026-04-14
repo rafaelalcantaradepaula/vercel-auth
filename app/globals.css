@@ -146,6 +146,7 @@ textarea {
 .app-topbar__inner {
   margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   max-width: 1500px;
   align-items: center;
@@ -158,8 +159,16 @@ textarea {
   pointer-events: auto;
 }
 
+.app-topbar__item--cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
 .app-page-offset {
-  padding-top: 4rem;
+  padding-top: 5rem;
 }
 
 .app-footer {
@@ -218,9 +227,72 @@ textarea {
   background: var(--toolbar-hover-bg);
 }
 
+.toolbar-control:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.toolbar-control:disabled:hover {
+  background: var(--toolbar-bg);
+}
+
 .toolbar-control--placeholder {
   height: 2.75rem;
   width: 10rem;
+}
+
+.toolbar-session {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  border: 1px solid var(--toolbar-border);
+  border-radius: 999px;
+  background: var(--toolbar-bg);
+  padding: 0.55rem 0.9rem;
+  color: var(--toolbar-text);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.16);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.toolbar-session__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.toolbar-session__label,
+.toolbar-session__value {
+  margin: 0;
+}
+
+.toolbar-session__label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.toolbar-session__value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--toolbar-text);
+}
+
+.toolbar-session__meta {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--badge-info-border);
+  border-radius: 999px;
+  background: var(--badge-info-bg);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--badge-info-text);
+  text-transform: lowercase;
 }
 
 .toolbar-control__indicator {
@@ -392,6 +464,10 @@ textarea {
   margin-top: 1.25rem;
   display: grid;
   gap: 1.25rem;
+}
+
+.dashboard-warning {
+  margin-top: 1.25rem;
 }
 
 .panel {
@@ -1337,7 +1413,7 @@ textarea {
   }
 
   .app-page-offset {
-    padding-top: 5rem;
+    padding-top: 5.5rem;
   }
 
   .app-footer {

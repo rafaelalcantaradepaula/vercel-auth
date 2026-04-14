@@ -11,6 +11,10 @@ import {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+type HomePageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
 function formatHeaderDate(date: Date) {
   const formatted = new Intl.DateTimeFormat("pt-BR", {
     weekday: "long",
@@ -22,7 +26,19 @@ function formatHeaderDate(date: Date) {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
-export default async function HomePage() {
+function readSingleSearchParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function getAccessWarning(params: Record<string, string | string[] | undefined>) {
+  if (readSingleSearchParam(params.access) !== "denied") {
+    return null;
+  }
+
+  return "Sua sessao atual nao possui permissao para a rota solicitada.";
+}
+
+export default async function HomePage({ searchParams }: HomePageProps) {
   const environmentStatus = getDatabaseEnvironmentStatus();
 
   if (!environmentStatus.hasDatabaseUrl) {
@@ -44,6 +60,8 @@ export default async function HomePage() {
   }
 
   const todayLabel = formatHeaderDate(new Date());
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const accessWarning = getAccessWarning(resolvedSearchParams);
 
   return (
     <main className="page-shell page-shell--dashboard">
@@ -65,6 +83,8 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        {accessWarning ? <div className="warning-panel dashboard-warning">{accessWarning}</div> : null}
 
         <div className="dashboard-grid">
           <section className="panel">

@@ -7,6 +7,9 @@ export type AppRouteDefinition = {
   permission: string | null;
 };
 
+const LOGOUT_ROUTE_PATH = "/logout";
+const DB_BOOTSTRAP_ROUTE_PATH = "/db_bootstrap";
+
 const APP_ROUTE_DEFINITIONS: AppRouteDefinition[] = [
   {
     path: "/",
@@ -22,7 +25,7 @@ const APP_ROUTE_DEFINITIONS: AppRouteDefinition[] = [
     description: "Bootstrap e diagnostico do banco.",
     visibility: "protected",
     includeInNavigation: true,
-    permission: "/db_bootstrap",
+    permission: null,
   },
   {
     path: "/api/health",
@@ -46,7 +49,7 @@ const APP_ROUTE_DEFINITIONS: AppRouteDefinition[] = [
     description: "Encerramento da sessao autenticada.",
     visibility: "protected",
     includeInNavigation: false,
-    permission: "/logout",
+    permission: null,
   },
   {
     path: "/admin/users",
@@ -139,10 +142,30 @@ export function getNavigableProtectedRoutes() {
   ).map((route) => ({ ...route }));
 }
 
+export function getNavigableRoutesForPermissions(permissions: readonly string[] | null | undefined) {
+  if (!permissions?.length) {
+    return [];
+  }
+
+  return getNavigableProtectedRoutes().filter((route) => hasRoutePermission(route.path, permissions));
+}
+
 export function getAssignableRoutePermissions() {
   return APP_ROUTE_DEFINITIONS.flatMap((route) =>
     route.visibility === "protected" && route.permission ? [route.permission] : [],
   );
+}
+
+export function isBootstrapRoute(pathname: string) {
+  return matchesRoutePath(pathname, DB_BOOTSTRAP_ROUTE_PATH);
+}
+
+export function isLogoutRoute(pathname: string) {
+  return matchesRoutePath(pathname, LOGOUT_ROUTE_PATH);
+}
+
+export function isAlwaysAllowedForAuthenticatedUser(pathname: string) {
+  return isLogoutRoute(pathname);
 }
 
 export function isPublicRoute(pathname: string) {

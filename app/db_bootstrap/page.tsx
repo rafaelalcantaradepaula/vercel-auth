@@ -1,11 +1,20 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
+import { getCurrentAuthSession } from "@/lib/auth/session-server";
 import { appConfig } from "@/lib/app-config";
-import { bootstrapDatabase } from "@/lib/bootstrap";
+import { bootstrapDatabase, inspectDatabaseState } from "@/lib/bootstrap";
 import { getDatabaseEnvironmentStatus } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+function shouldRequireAdminForBootstrap(
+  state: Awaited<ReturnType<typeof inspectDatabaseState>> | null,
+) {
+  // Once auth is fully provisioned, bootstrap becomes an admin-only maintenance screen.
+  return Boolean(state?.matchesConfiguredSchema);
+}
 
 function formatDateTime(value: Date | null) {
   if (!value) {
@@ -20,6 +29,24 @@ function formatDateTime(value: Date | null) {
 
 export default async function DbBootstrapPage() {
   const environmentStatus = getDatabaseEnvironmentStatus();
+  const authSession = await getCurrentAuthSession();
+  let databaseState: Awaited<ReturnType<typeof inspectDatabaseState>> | null = null;
+
+  if (environmentStatus.hasDatabaseUrl) {
+    try {
+      databaseState = await inspectDatabaseState();
+    } catch {
+      databaseState = null;
+    }
+  }
+
+  if (shouldRequireAdminForBootstrap(databaseState) && !authSession) {
+    redirect("/login");
+  }
+
+  if (shouldRequireAdminForBootstrap(databaseState) && authSession?.roleName !== "adm") {
+    redirect("/?access=denied");
+  }
 
   if (!environmentStatus.hasDatabaseUrl) {
     return (

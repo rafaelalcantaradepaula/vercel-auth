@@ -4,15 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const menuItems = [
-  { href: "/", label: "Inicio" },
-  { href: "/db_bootstrap", label: "DB Bootstrap" },
-];
+export type TopMenuItem = {
+  href: string;
+  label: string;
+};
 
-export function TopMenuDropdown() {
+function isMenuItemActive(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === href;
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+export function TopMenuDropdown({ items }: { items: TopMenuItem[] }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const hasItems = items.length > 0;
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
@@ -44,20 +53,27 @@ export function TopMenuDropdown() {
     <div ref={containerRef} className="toolbar-menu">
       <button
         type="button"
-        onClick={() => setIsOpen((current) => !current)}
+        onClick={() => {
+          if (!hasItems) {
+            return;
+          }
+
+          setIsOpen((current) => !current);
+        }}
         className="toolbar-control"
-        aria-expanded={isOpen}
+        aria-expanded={hasItems ? isOpen : false}
         aria-haspopup="menu"
+        disabled={!hasItems}
       >
         <span className="toolbar-control__indicator" />
         <span>Menu</span>
         <span className="toolbar-control__caret">{isOpen ? "^" : "v"}</span>
       </button>
 
-      {isOpen ? (
+      {isOpen && hasItems ? (
         <div className="toolbar-menu__panel" role="menu">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.href;
+          {items.map((item) => {
+            const isActive = isMenuItemActive(pathname, item.href);
 
             return (
               <Link
