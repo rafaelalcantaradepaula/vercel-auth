@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getAuthEnvironmentStatus, type AuthEnvironmentStatus } from "@/lib/auth/config";
 import { appConfig } from "@/lib/app-config";
 
 export type DatabaseConnectionQueryParam = {
@@ -29,6 +30,7 @@ export type DeploymentEnvironmentStatus = {
   databaseUrlSource: "DATABASE_URL" | "POSTGRES_URL" | null;
   hasExplicitAppName: boolean;
   hasExplicitDbVersion: boolean;
+  auth: AuthEnvironmentStatus;
   connectionDetails: DatabaseConnectionDetails | null;
 };
 
@@ -67,6 +69,7 @@ export function getDeploymentEnvironmentStatus(): DeploymentEnvironmentStatus {
     databaseUrlSource: database.source,
     hasExplicitAppName: Boolean(process.env.APP_NAME?.trim()),
     hasExplicitDbVersion: Boolean(process.env.DB_VERSION?.trim()),
+    auth: getAuthEnvironmentStatus(),
     connectionDetails: getDatabaseConnectionDetails(),
   };
 }
