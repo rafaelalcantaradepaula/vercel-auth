@@ -26,7 +26,7 @@ Salve todo o plano em arquivos markdown na pasta docs/sprints com prefixo Sprint
 - defina quaisquer campos adicionais que achar necessario
 - Usuario padrao: 
 	- id: Adm@vercel
-	- senha: galo1908#
+	- senha: s4mp13Change
 	- role: adm
 
 # Novas rotas

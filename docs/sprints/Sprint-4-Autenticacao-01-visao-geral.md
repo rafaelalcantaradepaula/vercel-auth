@@ -69,7 +69,7 @@ Implantar autenticacao propria com login por email, sessao via cookie seguro e c
 - Role `basic` com permissao apenas para `/`.
 - Usuario inicial:
   - `login: adm@vercel`
-  - `senha inicial: galo1908#`
+  - `senha inicial: s4mp13Change`
   - `role: adm`
 
 ## Ajustes estruturais previstos no codigo
