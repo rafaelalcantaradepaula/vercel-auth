@@ -9,6 +9,7 @@ export type AppRouteDefinition = {
 
 const LOGOUT_ROUTE_PATH = "/logout";
 const DB_BOOTSTRAP_ROUTE_PATH = "/db_bootstrap";
+const CHANGE_PASSWORD_ROUTE_PATH = "/change-password";
 
 const APP_ROUTE_DEFINITIONS: AppRouteDefinition[] = [
   {
@@ -49,6 +50,14 @@ const APP_ROUTE_DEFINITIONS: AppRouteDefinition[] = [
     description: "Encerramento da sessao autenticada.",
     visibility: "protected",
     includeInNavigation: false,
+    permission: null,
+  },
+  {
+    path: "/change-password",
+    label: "Trocar senha",
+    description: "Atualizacao da senha da sessao autenticada.",
+    visibility: "protected",
+    includeInNavigation: true,
     permission: null,
   },
   {
@@ -143,11 +152,14 @@ export function getNavigableProtectedRoutes() {
 }
 
 export function getNavigableRoutesForPermissions(permissions: readonly string[] | null | undefined) {
-  if (!permissions?.length) {
+  if (!permissions) {
     return [];
   }
 
-  return getNavigableProtectedRoutes().filter((route) => hasRoutePermission(route.path, permissions));
+  return getNavigableProtectedRoutes().filter(
+    (route) =>
+      isAlwaysAllowedForAuthenticatedUser(route.path) || hasRoutePermission(route.path, permissions),
+  );
 }
 
 export function getAssignableRoutePermissions() {
@@ -165,7 +177,7 @@ export function isLogoutRoute(pathname: string) {
 }
 
 export function isAlwaysAllowedForAuthenticatedUser(pathname: string) {
-  return isLogoutRoute(pathname);
+  return isLogoutRoute(pathname) || matchesRoutePath(pathname, CHANGE_PASSWORD_ROUTE_PATH);
 }
 
 export function isPublicRoute(pathname: string) {
