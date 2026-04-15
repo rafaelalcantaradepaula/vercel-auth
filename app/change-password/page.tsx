@@ -161,33 +161,6 @@ export default async function ChangePasswordPage({ searchParams }: ChangePasswor
             </form>
           </div>
         </article>
-
-        <article className="panel panel--alt admin-panel">
-          <div className="panel__header panel__header--alt">
-            <div>
-              <p className="panel__eyebrow">Orientacoes</p>
-              <h2 className="table-panel__title">Boas praticas</h2>
-            </div>
-          </div>
-          <div className="panel__content">
-            <div className="auth-notice-list">
-              <p className="auth-notice-item">
-                Informe primeiro a senha atual para validar que a mudanca esta sendo feita por voce.
-              </p>
-              <p className="auth-notice-item">
-                A nova senha precisa ter pelo menos 8 caracteres.
-              </p>
-              <p className="auth-notice-item">
-                Use a confirmacao para evitar erro de digitacao antes de salvar.
-              </p>
-            </div>
-            <div className="admin-summary-actions auth-link-row">
-              <Link href="/" prefetch={false} className="app-button app-button--auto">
-                Voltar ao inicio
-              </Link>
-            </div>
-          </div>
-        </article>
       </section>
     </main>
   );
