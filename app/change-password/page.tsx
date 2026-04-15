@@ -19,7 +19,7 @@ const flashMessages: Record<string, FlashMessage> = {
   "password-updated": { tone: "success", text: "Senha atualizada com sucesso." },
   CURRENT_PASSWORD_INVALID: {
     tone: "error",
-    text: "A senha atual informada n\u00e3o confere.",
+    text: "A senha atual informada não confere.",
   },
   INVALID_PASSWORD: {
     tone: "error",
@@ -27,15 +27,15 @@ const flashMessages: Record<string, FlashMessage> = {
   },
   PASSWORD_CONFIRMATION_MISMATCH: {
     tone: "error",
-    text: "A confirma\u00e7\u00e3o da nova senha precisa ser igual ao novo valor.",
+    text: "A confirmação da nova senha precisa ser igual ao novo valor.",
   },
   USER_NOT_FOUND: {
     tone: "error",
-    text: "N\u00e3o foi poss\u00edvel localizar a sess\u00e3o autenticada para trocar a senha.",
+    text: "Não foi possível localizar a sessão autenticada para trocar a senha.",
   },
   UNEXPECTED_ERROR: {
     tone: "error",
-    text: "N\u00e3o foi poss\u00edvel atualizar a senha agora. Tente novamente.",
+    text: "Não foi possível atualizar a senha agora. Tente novamente.",
   },
 };
 
@@ -66,11 +66,11 @@ export default async function ChangePasswordPage({ searchParams }: ChangePasswor
   return (
     <main className="page-shell page-shell--wide">
       <section className="summary-panel">
-        <p className="summary-panel__eyebrow">Seguran\u00e7a</p>
+        <p className="summary-panel__eyebrow">Segurança</p>
         <h1 className="summary-panel__title">Trocar senha</h1>
         <div className="summary-grid">
           <div className="summary-card">
-            <p className="summary-card__label">Sess\u00e3o atual</p>
+            <p className="summary-card__label">Sessão atual</p>
             <p className="summary-card__value">{authSession.name}</p>
           </div>
           <div className="summary-card">
@@ -126,7 +126,7 @@ export default async function ChangePasswordPage({ searchParams }: ChangePasswor
                     name="newPassword"
                     type="password"
                     className="auth-input"
-                    placeholder="M\u00ednimo de 8 caracteres"
+                    placeholder="Mínimo de 8 caracteres"
                     autoComplete="new-password"
                     required
                   />
@@ -151,7 +151,7 @@ export default async function ChangePasswordPage({ searchParams }: ChangePasswor
                   Salvar nova senha
                 </button>
                 <p className="admin-inline-note">
-                  A troca afeta apenas a conta autenticada nesta sess\u00e3o.
+                  A troca afeta apenas a conta autenticada nesta sessão.
                 </p>
               </div>
             </form>
