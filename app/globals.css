@@ -1356,15 +1356,6 @@ textarea {
   list-style: none;
 }
 
-.panel__header.admin-collapsible__summary > .admin-collapsible__indicator {
-  margin-left: auto;
-  order: 2;
-}
-
-.panel__header.admin-collapsible__summary > div:first-child {
-  order: 1;
-}
-
 .admin-collapsible__summary::-webkit-details-marker,
 .admin-role-card__summary::-webkit-details-marker {
   display: none;
