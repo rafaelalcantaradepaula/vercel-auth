@@ -223,7 +223,7 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
             </div>
           </article>
 
-          <details className="panel panel--alt admin-panel admin-collapsible" open>
+          <details className="panel panel--alt admin-panel admin-collapsible">
             <summary className="panel__header panel__header--alt admin-collapsible__summary">
               <div>
                 <p className="panel__eyebrow">Roles cadastradas</p>
@@ -234,7 +234,7 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
             <div className="panel__content admin-collapsible__content">
               <div className="admin-role-list">
                 {pageData.roles.map((role) => (
-                  <details key={role.id} className="admin-role-card admin-collapsible" open>
+                  <details key={role.id} className="admin-role-card admin-collapsible">
                     <summary className="admin-role-card__summary admin-collapsible__summary">
                       <div className="admin-user-header">
                         <div>
