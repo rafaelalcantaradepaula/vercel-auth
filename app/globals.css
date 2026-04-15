@@ -1171,13 +1171,23 @@ textarea {
 }
 
 .admin-user-card {
+  overflow: hidden;
   border: 1px solid var(--surface-border);
   border-radius: 1.5rem;
   background: var(--surface-bg);
-  padding: 1.25rem;
   transition:
     background 180ms ease,
     border-color 180ms ease;
+}
+
+.admin-user-card__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  cursor: pointer;
+  list-style: none;
 }
 
 .admin-user-header {
@@ -1341,7 +1351,6 @@ textarea {
 .admin-collapsible__summary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
   cursor: pointer;
   list-style: none;

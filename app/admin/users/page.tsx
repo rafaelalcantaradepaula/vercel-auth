@@ -122,10 +122,6 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
         <section className="summary-panel">
           <p className="summary-panel__eyebrow">Administração</p>
           <h1 className="summary-panel__title">Gestão de usuários</h1>
-          <p className="summary-panel__copy">
-            Cadastre usuários, troque roles, ative ou desative acessos e redefina senhas sem sair
-            da aplicação.
-          </p>
           <div className="summary-grid admin-summary-grid">
             <div className="summary-card">
               <p className="summary-card__label">Total de usuários</p>
@@ -178,7 +174,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                       name="login"
                       type="email"
                       className="auth-input"
-                      placeholder="novo.usuario@vercel"
+                      placeholder="novo.email@dominio"
                       required
                     />
                   </div>
@@ -235,134 +231,139 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
 
           <details className="panel panel--alt admin-panel admin-collapsible">
             <summary className="panel__header panel__header--alt admin-collapsible__summary">
+              <span className="admin-collapsible__indicator" aria-hidden="true" />
               <div>
                 <p className="panel__eyebrow">Usuários cadastrados</p>
                 <h2 className="table-panel__title">Lista de acessos</h2>
               </div>
-              <span className="admin-collapsible__indicator" aria-hidden="true" />
             </summary>
             <div className="panel__content admin-collapsible__content">
               <div className="admin-user-list">
                 {pageData.users.map((user) => (
-                  <section key={user.id} className="admin-user-card">
-                    <div className="admin-user-header">
-                      <div>
-                        <h3 className="admin-user-title">{user.name}</h3>
-                        <p className="admin-user-login">{user.login}</p>
-                      </div>
-                      <div className="admin-badge-row">
-                        <span className="app-badge">{user.roleName}</span>
-                        <span
-                          className={`admin-status-badge ${
-                            user.isActive ? "admin-status-badge--active" : "admin-status-badge--inactive"
-                          }`}
-                        >
-                          {user.isActive ? "Ativo" : "Inativo"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="admin-meta-grid">
-                      <div className="summary-card">
-                        <p className="summary-card__label">Último login</p>
-                        <p className="summary-card__value admin-meta-value">
-                          {formatDateTime(user.lastLoginAt)}
-                        </p>
-                      </div>
-                      <div className="summary-card">
-                        <p className="summary-card__label">Atualizado em</p>
-                        <p className="summary-card__value admin-meta-value">
-                          {formatDateTime(user.updatedAt)}
-                        </p>
-                      </div>
-                    </div>
-
-                    <form action={updateUserAction} className="admin-form-stack admin-form-stack--card">
-                      <input type="hidden" name="userId" value={String(user.id)} />
-                      <div className="admin-form-grid admin-form-grid--user-edit">
-                        <div className="auth-field">
-                          <label htmlFor={`name-${user.id}`} className="auth-label">
-                            Nome
-                          </label>
-                          <input
-                            id={`name-${user.id}`}
-                            name="name"
-                            type="text"
-                            className="auth-input"
-                            defaultValue={user.name}
-                            required
-                          />
+                  <details key={user.id} className="admin-user-card admin-collapsible">
+                    <summary className="admin-user-card__summary admin-collapsible__summary">
+                      <div className="admin-user-header">
+                        <div>
+                          <h3 className="admin-user-title">{user.name}</h3>
+                          <p className="admin-user-login">{user.login}</p>
                         </div>
-                        <div className="auth-field">
-                          <label htmlFor={`role-${user.id}`} className="auth-label">
-                            Role
-                          </label>
-                          <select
-                            id={`role-${user.id}`}
-                            name="roleId"
-                            className="auth-input"
-                            defaultValue={String(user.roleId)}
-                            required
+                        <div className="admin-badge-row">
+                          <span className="app-badge">{user.roleName}</span>
+                          <span
+                            className={`admin-status-badge ${
+                              user.isActive ? "admin-status-badge--active" : "admin-status-badge--inactive"
+                            }`}
                           >
-                            {pageData.roles.map((role) => (
-                              <option key={role.id} value={role.id}>
-                                {role.name}
-                              </option>
-                            ))}
-                          </select>
+                            {user.isActive ? "Ativo" : "Inativo"}
+                          </span>
                         </div>
-                        <label className="admin-checkbox admin-checkbox--inline" htmlFor={`status-${user.id}`}>
-                          <input
-                            id={`status-${user.id}`}
-                            name="status"
-                            type="checkbox"
-                            value="active"
-                            className="admin-checkbox__input"
-                            defaultChecked={user.isActive}
-                          />
-                          <span className="admin-checkbox__label">Usuário ativo</span>
-                        </label>
                       </div>
-                      <div className="admin-actions-row">
-                        <button type="submit" className="app-button app-button--auto">
-                          Salvar ajustes
-                        </button>
-                        {authSession.userId === user.id ? (
-                          <p className="admin-inline-note">
-                            Sua própria sessão não pode trocar de role nem se desativar aqui.
-                          </p>
-                        ) : null}
-                      </div>
-                    </form>
+                      <span className="admin-collapsible__indicator" aria-hidden="true" />
+                    </summary>
 
-                    <form
-                      action={resetUserPasswordAction}
-                      className="admin-form-stack admin-form-stack--card"
-                    >
-                      <input type="hidden" name="userId" value={String(user.id)} />
-                      <div className="admin-inline-form-row">
-                        <div className="auth-field admin-inline-form-row__field">
-                          <label htmlFor={`password-${user.id}`} className="auth-label">
-                            Nova senha
-                          </label>
-                          <input
-                            id={`password-${user.id}`}
-                            name="password"
-                            type="password"
-                            className="auth-input"
-                            placeholder="Mínimo de 8 caracteres"
-                            required
-                          />
+                    <div className="admin-collapsible__content">
+                      <div className="admin-meta-grid">
+                        <div className="summary-card">
+                          <p className="summary-card__label">Último login</p>
+                          <p className="summary-card__value admin-meta-value">
+                            {formatDateTime(user.lastLoginAt)}
+                          </p>
                         </div>
-                        <button
-                          type="submit"
-                          className="app-button app-button--auto admin-inline-form-row__button"
-                        >
-                          Salvar
-                        </button>
+                        <div className="summary-card">
+                          <p className="summary-card__label">Atualizado em</p>
+                          <p className="summary-card__value admin-meta-value">
+                            {formatDateTime(user.updatedAt)}
+                          </p>
+                        </div>
                       </div>
-                    </form>
-                  </section>
+
+                      <form action={updateUserAction} className="admin-form-stack admin-form-stack--card">
+                        <input type="hidden" name="userId" value={String(user.id)} />
+                        <div className="admin-form-grid admin-form-grid--user-edit">
+                          <div className="auth-field">
+                            <label htmlFor={`name-${user.id}`} className="auth-label">
+                              Nome
+                            </label>
+                            <input
+                              id={`name-${user.id}`}
+                              name="name"
+                              type="text"
+                              className="auth-input"
+                              defaultValue={user.name}
+                              required
+                            />
+                          </div>
+                          <div className="auth-field">
+                            <label htmlFor={`role-${user.id}`} className="auth-label">
+                              Role
+                            </label>
+                            <select
+                              id={`role-${user.id}`}
+                              name="roleId"
+                              className="auth-input"
+                              defaultValue={String(user.roleId)}
+                              required
+                            >
+                              {pageData.roles.map((role) => (
+                                <option key={role.id} value={role.id}>
+                                  {role.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <label className="admin-checkbox admin-checkbox--inline" htmlFor={`status-${user.id}`}>
+                            <input
+                              id={`status-${user.id}`}
+                              name="status"
+                              type="checkbox"
+                              value="active"
+                              className="admin-checkbox__input"
+                              defaultChecked={user.isActive}
+                            />
+                            <span className="admin-checkbox__label">Usuário ativo</span>
+                          </label>
+                        </div>
+                        <div className="admin-actions-row">
+                          <button type="submit" className="app-button app-button--auto">
+                            Salvar ajustes
+                          </button>
+                          {authSession.userId === user.id ? (
+                            <p className="admin-inline-note">
+                              Sua própria sessão não pode trocar de role nem se desativar aqui.
+                            </p>
+                          ) : null}
+                        </div>
+                      </form>
+
+                      <form
+                        action={resetUserPasswordAction}
+                        className="admin-form-stack admin-form-stack--card"
+                      >
+                        <input type="hidden" name="userId" value={String(user.id)} />
+                        <div className="admin-inline-form-row">
+                          <div className="auth-field admin-inline-form-row__field">
+                            <label htmlFor={`password-${user.id}`} className="auth-label">
+                              Nova senha
+                            </label>
+                            <input
+                              id={`password-${user.id}`}
+                              name="password"
+                              type="password"
+                              className="auth-input"
+                              placeholder="Mínimo de 8 caracteres"
+                              required
+                            />
+                          </div>
+                          <button
+                            type="submit"
+                            className="app-button app-button--auto admin-inline-form-row__button"
+                          >
+                            Salvar
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </details>
                 ))}
 
                 {!pageData.users.length ? (
