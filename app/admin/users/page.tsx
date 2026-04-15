@@ -22,33 +22,33 @@ type FlashMessage = {
 };
 
 const flashMessages: Record<string, FlashMessage> = {
-  "user-created": { tone: "success", text: "Usuario criado com sucesso." },
-  "user-updated": { tone: "success", text: "Usuario atualizado com sucesso." },
+  "user-created": { tone: "success", text: "Usuário criado com sucesso." },
+  "user-updated": { tone: "success", text: "Usuário atualizado com sucesso." },
   "password-reset": { tone: "success", text: "Senha redefinida com sucesso." },
-  INVALID_EMAIL: { tone: "error", text: "Informe um email valido para o login do usuario." },
-  INVALID_NAME: { tone: "error", text: "O nome do usuario deve ter entre 1 e 60 caracteres." },
+  INVALID_EMAIL: { tone: "error", text: "Informe um email válido para o login do usuário." },
+  INVALID_NAME: { tone: "error", text: "O nome do usuário deve ter entre 1 e 60 caracteres." },
   INVALID_PASSWORD: {
     tone: "error",
     text: "A senha deve ter pelo menos 8 caracteres.",
   },
-  ROLE_NOT_FOUND: { tone: "error", text: "A role selecionada nao foi encontrada." },
-  LOGIN_IN_USE: { tone: "error", text: "Ja existe um usuario com esse email." },
-  USER_NOT_FOUND: { tone: "error", text: "O usuario informado nao foi encontrado." },
+  ROLE_NOT_FOUND: { tone: "error", text: "A role selecionada não foi encontrada." },
+  LOGIN_IN_USE: { tone: "error", text: "Já existe um usuário com esse email." },
+  USER_NOT_FOUND: { tone: "error", text: "O usuário informado não foi encontrado." },
   SELF_DEACTIVATE: {
     tone: "error",
-    text: "A sessao administrativa atual nao pode se desativar por esta tela.",
+    text: "A sessão administrativa atual não pode se desativar por esta tela.",
   },
   SELF_ROLE_CHANGE: {
     tone: "error",
-    text: "A sessao administrativa atual nao pode trocar a propria role por esta tela.",
+    text: "A sessão administrativa atual não pode trocar a própria role por esta tela.",
   },
   LAST_ACTIVE_ADMIN: {
     tone: "error",
-    text: "O ultimo admin ativo nao pode ser desativado nem perder acesso administrativo.",
+    text: "O último admin ativo não pode ser desativado nem perder acesso administrativo.",
   },
   UNEXPECTED_ERROR: {
     tone: "error",
-    text: "Nao foi possivel concluir a operacao agora. Tente novamente.",
+    text: "Não foi possível concluir a operação agora. Tente novamente.",
   },
 };
 
@@ -94,9 +94,9 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
       <main className="page-shell page-shell--narrow">
         <section className="notice-panel">
           <p className="notice-panel__eyebrow">Acesso restrito</p>
-          <h1 className="notice-panel__title">Somente administradores podem gerenciar usuarios.</h1>
+          <h1 className="notice-panel__title">Somente administradores podem gerenciar usuários.</h1>
           <p className="notice-panel__copy">
-            Sua sessao atual nao possui permissao para criar, editar ou redefinir senhas.
+            Sua sessão atual não possui permissão para criar, editar ou redefinir senhas.
           </p>
           <div className="notice-panel__actions auth-link-row">
             <Link href="/" prefetch={false} className="app-button app-button--auto">
@@ -120,19 +120,19 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
     return (
       <main className="page-shell page-shell--wide">
         <section className="summary-panel">
-          <p className="summary-panel__eyebrow">Administracao</p>
-          <h1 className="summary-panel__title">Gestao de usuarios</h1>
+          <p className="summary-panel__eyebrow">Administração</p>
+          <h1 className="summary-panel__title">Gestão de usuários</h1>
           <p className="summary-panel__copy">
-            Cadastre usuarios, troque roles, ative ou desative acessos e redefina senhas sem sair
-            da aplicacao.
+            Cadastre usuários, troque roles, ative ou desative acessos e redefina senhas sem sair
+            da aplicação.
           </p>
           <div className="summary-grid admin-summary-grid">
             <div className="summary-card">
-              <p className="summary-card__label">Total de usuarios</p>
+              <p className="summary-card__label">Total de usuários</p>
               <p className="summary-card__value">{pageData.summary.totalUsers}</p>
             </div>
             <div className="summary-card">
-              <p className="summary-card__label">Usuarios ativos</p>
+              <p className="summary-card__label">Usuários ativos</p>
               <p className="summary-card__value">{pageData.summary.activeUsers}</p>
             </div>
             <div className="summary-card">
@@ -158,11 +158,11 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
           </section>
         ) : null}
 
-        <section className="admin-users-layout">
+        <section className="admin-users-layout admin-users-layout--stacked">
           <article className="panel admin-panel">
             <div className="panel__header">
               <div>
-                <p className="panel__eyebrow">Novo usuario</p>
+                <p className="panel__eyebrow">Novo usuário</p>
                 <h2 className="table-panel__title">Criar acesso</h2>
               </div>
             </div>
@@ -191,7 +191,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                       name="name"
                       type="text"
                       className="auth-input"
-                      placeholder="Nome do usuario"
+                      placeholder="Nome do usuário"
                       required
                     />
                   </div>
@@ -226,21 +226,22 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                 </div>
                 <div className="admin-actions-row">
                   <button type="submit" className="app-button app-button--auto">
-                    Criar usuario
+                    Criar usuário
                   </button>
                 </div>
               </form>
             </div>
           </article>
 
-          <article className="panel panel--alt admin-panel">
-            <div className="panel__header panel__header--alt">
+          <details className="panel panel--alt admin-panel admin-collapsible" open>
+            <summary className="panel__header panel__header--alt admin-collapsible__summary">
               <div>
-                <p className="panel__eyebrow">Usuarios cadastrados</p>
+                <p className="panel__eyebrow">Usuários cadastrados</p>
                 <h2 className="table-panel__title">Lista de acessos</h2>
               </div>
-            </div>
-            <div className="panel__content">
+              <span className="admin-collapsible__indicator" aria-hidden="true" />
+            </summary>
+            <div className="panel__content admin-collapsible__content">
               <div className="admin-user-list">
                 {pageData.users.map((user) => (
                   <section key={user.id} className="admin-user-card">
@@ -263,7 +264,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
 
                     <div className="admin-meta-grid">
                       <div className="summary-card">
-                        <p className="summary-card__label">Ultimo login</p>
+                        <p className="summary-card__label">Último login</p>
                         <p className="summary-card__value admin-meta-value">
                           {formatDateTime(user.lastLoginAt)}
                         </p>
@@ -312,17 +313,19 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                         </div>
                         <div className="auth-field">
                           <label htmlFor={`status-${user.id}`} className="auth-label">
-                            Status
+                            Usuário ativo
                           </label>
-                          <select
-                            id={`status-${user.id}`}
-                            name="status"
-                            className="auth-input"
-                            defaultValue={user.isActive ? "active" : "inactive"}
-                          >
-                            <option value="active">Ativo</option>
-                            <option value="inactive">Inativo</option>
-                          </select>
+                          <label className="admin-checkbox">
+                            <input
+                              id={`status-${user.id}`}
+                              name="status"
+                              type="checkbox"
+                              value="active"
+                              className="admin-checkbox__input"
+                              defaultChecked={user.isActive}
+                            />
+                            <span className="admin-checkbox__label">Ativo</span>
+                          </label>
                         </div>
                       </div>
                       <div className="admin-actions-row">
@@ -331,7 +334,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                         </button>
                         {authSession.userId === user.id ? (
                           <p className="admin-inline-note">
-                            Sua propria sessao nao pode trocar de role nem se desativar aqui.
+                            Sua própria sessão não pode trocar de role nem se desativar aqui.
                           </p>
                         ) : null}
                       </div>
@@ -342,8 +345,8 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                       className="admin-form-stack admin-form-stack--card"
                     >
                       <input type="hidden" name="userId" value={String(user.id)} />
-                      <div className="admin-form-grid admin-form-grid--password">
-                        <div className="auth-field">
+                      <div className="admin-inline-form-row">
+                        <div className="auth-field admin-inline-form-row__field">
                           <label htmlFor={`password-${user.id}`} className="auth-label">
                             Nova senha
                           </label>
@@ -352,14 +355,15 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                             name="password"
                             type="password"
                             className="auth-input"
-                            placeholder="Minimo de 8 caracteres"
+                            placeholder="Mínimo de 8 caracteres"
                             required
                           />
                         </div>
-                      </div>
-                      <div className="admin-actions-row">
-                        <button type="submit" className="app-button app-button--auto">
-                          Redefinir senha
+                        <button
+                          type="submit"
+                          className="app-button app-button--auto admin-inline-form-row__button"
+                        >
+                          Salvar
                         </button>
                       </div>
                     </form>
@@ -368,24 +372,24 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
 
                 {!pageData.users.length ? (
                   <div className="warning-panel">
-                    Nenhum usuario foi encontrado. Crie o primeiro acesso acima.
+                    Nenhum usuário foi encontrado. Crie o primeiro acesso acima.
                   </div>
                 ) : null}
               </div>
             </div>
-          </article>
+          </details>
         </section>
       </main>
     );
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Nao foi possivel carregar a administracao.";
+      error instanceof Error ? error.message : "Não foi possível carregar a administração.";
 
     return (
       <main className="page-shell page-shell--narrow">
         <section className="notice-panel">
-          <p className="notice-panel__eyebrow">Administracao indisponivel</p>
-          <h1 className="notice-panel__title">A tela de usuarios nao pode ser carregada agora.</h1>
+          <p className="notice-panel__eyebrow">Administração indisponível</p>
+          <h1 className="notice-panel__title">A tela de usuários não pode ser carregada agora.</h1>
           <p className="notice-panel__copy">{message}</p>
           <div className="notice-panel__actions auth-link-row">
             <Link href="/db_bootstrap" prefetch={false} className="app-button app-button--auto">

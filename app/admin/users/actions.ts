@@ -82,7 +82,7 @@ export async function updateUserAction(formData: FormData) {
       actingUserId: adminSession.userId,
       name: String(formData.get("name") ?? ""),
       roleId: parseNumericFormValue(formData, "roleId"),
-      isActive: String(formData.get("status") ?? "inactive") === "active",
+      isActive: formData.getAll("status").some((value) => String(value) === "active"),
     });
   } catch (error) {
     redirectUrl = buildRedirectUrl(getErrorResult(error), true);

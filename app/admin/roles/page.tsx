@@ -22,21 +22,21 @@ const flashMessages: Record<string, FlashMessage> = {
   "role-updated": { tone: "success", text: "Role atualizada com sucesso." },
   INVALID_ROLE_NAME: {
     tone: "error",
-    text: "Use um nome em minusculas com ate 20 caracteres, usando letras, numeros, hifens ou underscore.",
+    text: "Use um nome em minúsculas com até 20 caracteres, usando letras, números, hífens ou underscore.",
   },
   INVALID_PERMISSIONS: {
     tone: "error",
-    text: "Selecione apenas permissoes validas do catalogo de rotas protegidas.",
+    text: "Selecione apenas permissões válidas do catálogo de rotas protegidas.",
   },
-  ROLE_NOT_FOUND: { tone: "error", text: "A role selecionada nao foi encontrada." },
-  ROLE_NAME_IN_USE: { tone: "error", text: "Ja existe uma role com esse nome." },
+  ROLE_NOT_FOUND: { tone: "error", text: "A role selecionada não foi encontrada." },
+  ROLE_NAME_IN_USE: { tone: "error", text: "Já existe uma role com esse nome." },
   SYSTEM_ROLE_RENAME: {
     tone: "error",
-    text: "As roles de sistema `adm` e `basic` mantem o nome fixo para preservar a governanca.",
+    text: "As roles de sistema `adm` e `basic` mantêm o nome fixo.",
   },
   UNEXPECTED_ERROR: {
     tone: "error",
-    text: "Nao foi possivel salvar a role agora. Tente novamente.",
+    text: "Não foi possível salvar a role agora. Tente novamente.",
   },
 };
 
@@ -61,7 +61,7 @@ function getFlashMessage(params: Record<string, string | string[] | undefined>) 
 
 function formatDateTime(value: Date | null) {
   if (!value) {
-    return "Ainda nao";
+    return "Ainda não";
   }
 
   return new Intl.DateTimeFormat("pt-BR", {
@@ -72,14 +72,14 @@ function formatDateTime(value: Date | null) {
 
 function getRolePermissionsSummary(permissions: string[]) {
   if (!permissions.length) {
-    return "Sem rotas protegidas atribuidas.";
+    return "Sem rotas protegidas atribuídas.";
   }
 
   if (permissions.includes("*")) {
     return "Acesso total a todas as rotas protegidas.";
   }
 
-  return `${permissions.length} permissao(oes) salva(s).`;
+  return `${permissions.length} permissão(ões) salva(s).`;
 }
 
 export default async function AdminRolesPage({ searchParams }: AdminRolesPageProps) {
@@ -96,7 +96,7 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
           <p className="notice-panel__eyebrow">Acesso restrito</p>
           <h1 className="notice-panel__title">Somente administradores podem gerenciar roles.</h1>
           <p className="notice-panel__copy">
-            Sua sessao atual nao possui permissao para ajustar permissoes por rota.
+            Sua sessão atual não possui permissão para ajustar permissões por rota.
           </p>
           <div className="notice-panel__actions auth-link-row">
             <Link href="/" prefetch={false} className="app-button app-button--auto">
@@ -120,13 +120,9 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
     return (
       <main className="page-shell page-shell--wide">
         <section className="summary-panel">
-          <p className="summary-panel__eyebrow">Administracao</p>
-          <h1 className="summary-panel__title">Governanca de roles</h1>
-          <p className="summary-panel__copy">
-            Controle o conjunto de rotas protegidas liberado para cada perfil, preservando as
-            garantias minimas das roles de sistema.
-          </p>
-          <div className="summary-grid admin-summary-grid">
+          <p className="summary-panel__eyebrow">Administração</p>
+          <h1 className="summary-panel__title">Roles</h1>
+          <div className="summary-grid admin-summary-grid admin-summary-grid--roles">
             <div className="summary-card">
               <p className="summary-card__label">Total de roles</p>
               <p className="summary-card__value">{pageData.summary.totalRoles}</p>
@@ -146,7 +142,7 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
           </div>
           <div className="admin-summary-actions auth-link-row">
             <Link href="/admin/users" prefetch={false} className="app-button app-button--auto">
-              Abrir usuarios
+              Abrir usuários
             </Link>
             <Link href="/" prefetch={false} className="app-button app-button--auto">
               Voltar ao inicio
@@ -162,7 +158,7 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
           </section>
         ) : null}
 
-        <section className="admin-users-layout">
+        <section className="admin-users-layout admin-users-layout--stacked">
           <article className="panel admin-panel">
             <div className="panel__header">
               <div>
@@ -185,16 +181,16 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
                     required
                   />
                   <p className="admin-inline-note">
-                    Use ate 20 caracteres em minusculas, com letras, numeros, hifens ou
+                    Use até 20 caracteres em minúsculas, com letras, números, hífens ou
                     underscore.
                   </p>
                 </div>
 
                 <div className="admin-form-stack">
                   <div>
-                    <p className="auth-label">Permissoes por rota</p>
+                    <p className="auth-label">Permissões por rota</p>
                     <p className="admin-inline-note">
-                      Selecione quais rotas protegidas esta role podera acessar.
+                      Selecione quais rotas protegidas esta role poderá acessar.
                     </p>
                   </div>
                   <div className="admin-role-permission-grid">
@@ -227,35 +223,40 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
             </div>
           </article>
 
-          <article className="panel panel--alt admin-panel">
-            <div className="panel__header panel__header--alt">
+          <details className="panel panel--alt admin-panel admin-collapsible" open>
+            <summary className="panel__header panel__header--alt admin-collapsible__summary">
               <div>
                 <p className="panel__eyebrow">Roles cadastradas</p>
-                <h2 className="table-panel__title">Catalogo de permissoes</h2>
+                <h2 className="table-panel__title">Catálogo de permissões</h2>
               </div>
-            </div>
-            <div className="panel__content">
+              <span className="admin-collapsible__indicator" aria-hidden="true" />
+            </summary>
+            <div className="panel__content admin-collapsible__content">
               <div className="admin-role-list">
                 {pageData.roles.map((role) => (
-                  <section key={role.id} className="admin-role-card">
-                    <div className="admin-user-header">
-                      <div>
-                        <h3 className="admin-user-title">{role.name}</h3>
-                        <p className="admin-user-login">{getRolePermissionsSummary(role.permissions)}</p>
+                  <details key={role.id} className="admin-role-card admin-collapsible" open>
+                    <summary className="admin-role-card__summary admin-collapsible__summary">
+                      <div className="admin-user-header">
+                        <div>
+                          <h3 className="admin-user-title">{role.name}</h3>
+                          <p className="admin-user-login">{getRolePermissionsSummary(role.permissions)}</p>
+                        </div>
+                        <div className="admin-badge-row">
+                          <span className="app-badge">
+                            {role.isSystem ? "Sistema" : "Customizada"}
+                          </span>
+                          <span className="app-badge app-badge--success">
+                            {role.activeUserCount} ativo(s)
+                          </span>
+                        </div>
                       </div>
-                      <div className="admin-badge-row">
-                        <span className="app-badge">
-                          {role.isSystem ? "Sistema" : "Customizada"}
-                        </span>
-                        <span className="app-badge app-badge--success">
-                          {role.activeUserCount} ativo(s)
-                        </span>
-                      </div>
-                    </div>
+                      <span className="admin-collapsible__indicator" aria-hidden="true" />
+                    </summary>
 
+                    <div className="admin-collapsible__content">
                     <div className="admin-meta-grid">
                       <div className="summary-card">
-                        <p className="summary-card__label">Usuarios vinculados</p>
+                        <p className="summary-card__label">Usuários vinculados</p>
                         <p className="summary-card__value admin-meta-value">{role.userCount}</p>
                       </div>
                       <div className="summary-card">
@@ -275,7 +276,7 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
                         ))
                       ) : (
                         <p className="admin-inline-note">
-                          Esta role nao possui rotas protegidas atribuidas no momento.
+                          Esta role não possui rotas protegidas atribuídas no momento.
                         </p>
                       )}
                     </div>
@@ -305,7 +306,7 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
 
                       {role.name === "adm" ? (
                         <div className="warning-panel">
-                          A role `adm` sempre preserva acesso total com `*` e nao pode ser
+                          A role `adm` sempre preserva acesso total com `*` e não pode ser
                           esvaziada nem renomeada por esta tela.
                         </div>
                       ) : (
@@ -314,8 +315,8 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
                             <p className="auth-label">Rotas liberadas</p>
                             <p className="admin-inline-note">
                               {role.name === "basic"
-                                ? "A role basic sempre mantera acesso minimo a /, mesmo quando voce ajustar as demais permissoes."
-                                : "Marque as rotas protegidas que esta role podera acessar apos o proximo login do usuario."}
+                                ? "A role basic sempre manterá acesso mínimo a /, mesmo quando você ajustar as demais permissões."
+                                : "Marque as rotas protegidas que esta role poderá acessar após o próximo login do usuário."}
                             </p>
                           </div>
                           <div className="admin-role-permission-grid">
@@ -360,14 +361,10 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
                         <button type="submit" className="app-button app-button--auto">
                           Salvar role
                         </button>
-                        {role.isSystem ? (
-                          <p className="admin-inline-note">
-                            Roles de sistema mantem regras fixas para garantir `adm` e `basic`.
-                          </p>
-                        ) : null}
                       </div>
                     </form>
-                  </section>
+                    </div>
+                  </details>
                 ))}
 
                 {!pageData.roles.length ? (
@@ -378,19 +375,19 @@ export default async function AdminRolesPage({ searchParams }: AdminRolesPagePro
                 ) : null}
               </div>
             </div>
-          </article>
+          </details>
         </section>
       </main>
     );
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Nao foi possivel carregar a administracao.";
+      error instanceof Error ? error.message : "Não foi possível carregar a administração.";
 
     return (
       <main className="page-shell page-shell--narrow">
         <section className="notice-panel">
-          <p className="notice-panel__eyebrow">Administracao indisponivel</p>
-          <h1 className="notice-panel__title">A tela de roles nao pode ser carregada agora.</h1>
+          <p className="notice-panel__eyebrow">Administração indisponível</p>
+          <h1 className="notice-panel__title">A tela de roles não pode ser carregada agora.</h1>
           <p className="notice-panel__copy">{message}</p>
           <div className="notice-panel__actions auth-link-row">
             <Link href="/db_bootstrap" prefetch={false} className="app-button app-button--auto">

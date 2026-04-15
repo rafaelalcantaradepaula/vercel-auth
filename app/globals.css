@@ -922,6 +922,13 @@ textarea {
   font-size: 0.975rem;
 }
 
+.auth-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
 .auth-stat-grid {
   margin-top: 1.5rem;
   display: grid;
@@ -950,6 +957,7 @@ textarea {
 }
 
 .auth-input {
+  flex: 1 1 0;
   width: 100%;
   border: 1px solid var(--surface-border);
   border-radius: 1rem;
@@ -970,6 +978,14 @@ textarea {
 .auth-input:focus {
   border-color: var(--button-border);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--button-border) 18%, transparent);
+}
+
+.auth-input--with-action {
+  min-width: 0;
+}
+
+.auth-inline-button {
+  min-width: 7rem;
 }
 
 .auth-actions {
@@ -1058,6 +1074,10 @@ textarea {
   gap: 1.5rem;
 }
 
+.admin-users-layout--stacked {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .admin-panel {
   min-width: 0;
 }
@@ -1083,6 +1103,22 @@ textarea {
   grid-template-columns: minmax(0, 1fr);
 }
 
+.admin-inline-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.admin-inline-form-row__field {
+  min-width: min(100%, 16rem);
+  flex: 1 1 18rem;
+}
+
+.admin-inline-form-row__button {
+  min-width: 8rem;
+}
+
 .admin-actions-row {
   display: flex;
   flex-wrap: wrap;
@@ -1094,6 +1130,29 @@ textarea {
   margin: 0;
   font-size: 0.875rem;
   color: var(--text-muted);
+}
+
+.admin-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 1rem;
+  background: var(--surface-bg);
+  padding: 0.95rem 1rem;
+  color: var(--text-primary);
+}
+
+.admin-checkbox__input {
+  height: 1rem;
+  width: 1rem;
+  accent-color: var(--button-border);
+}
+
+.admin-checkbox__label {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
 }
 
 .admin-user-list {
@@ -1183,13 +1242,23 @@ textarea {
 }
 
 .admin-role-card {
+  overflow: hidden;
   border: 1px solid var(--surface-border);
   border-radius: 1.5rem;
   background: var(--surface-bg);
-  padding: 1.25rem;
   transition:
     background 180ms ease,
     border-color 180ms ease;
+}
+
+.admin-role-card__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  cursor: pointer;
+  list-style: none;
 }
 
 .admin-role-permission-grid {
@@ -1258,6 +1327,51 @@ textarea {
   font-size: 0.875rem;
   line-height: 1.5;
   color: var(--text-secondary);
+}
+
+.admin-collapsible__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.admin-collapsible__summary::-webkit-details-marker,
+.admin-role-card__summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-collapsible__indicator {
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 2.25rem;
+  width: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
+  background: var(--surface-bg);
+}
+
+.admin-collapsible__indicator::before {
+  content: "+";
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.admin-collapsible[open] > .admin-collapsible__summary .admin-collapsible__indicator::before {
+  content: "-";
+}
+
+.admin-collapsible__content {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.auth-shell--compact {
+  width: min(100%, 32rem);
 }
 
 .summary-panel {
@@ -1500,27 +1614,14 @@ textarea {
     justify-content: flex-end;
   }
 
-  .auth-shell {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(24rem, 0.9fr);
-    gap: 1.5rem;
-    align-items: stretch;
-  }
-
-  .auth-panel--hero,
-  .auth-panel--form {
-    height: 100%;
-  }
-
-  .admin-users-layout {
-    grid-template-columns: minmax(22rem, 0.85fr) minmax(0, 1.15fr);
-    align-items: start;
-  }
-
   .admin-user-header {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
+  }
+
+  .admin-summary-grid--roles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

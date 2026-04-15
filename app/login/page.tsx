@@ -78,44 +78,10 @@ export default async function LoginPage() {
 
   return (
     <main className="page-shell page-shell--auth">
-      <div className="auth-shell">
-        <section className="auth-panel auth-panel--hero">
-          <p className="panel__eyebrow">Sprint 4</p>
-          <h1 className="auth-title">Entre com seu email para acessar a aplicacao.</h1>
-          <p className="auth-copy">
-            O login agora usa sessao propria com cookie seguro, roles por rota e validacao no
-            banco criado pelo bootstrap `1.1`.
-          </p>
-          <div className="hero-panel__badges">
-            <div className="app-badge">Login por email</div>
-            <div className="app-badge app-badge--success">Sessao segura</div>
-          </div>
-          <div className="auth-stat-grid">
-            <div className="summary-card">
-              <p className="summary-card__label">Versao do banco</p>
-              <p className="summary-card__value">{environmentStatus.dbVersion}</p>
-            </div>
-            <div className="summary-card">
-              <p className="summary-card__label">Cookie</p>
-              <p className="summary-card__value">
-                {environmentStatus.auth.secureCookies ? "Secure" : "Local"}
-              </p>
-            </div>
-            <div className="summary-card">
-              <p className="summary-card__label">Sessao</p>
-              <p className="summary-card__value">
-                {environmentStatus.auth.sessionTtlHours}h
-              </p>
-            </div>
-          </div>
-        </section>
-
+      <div className="auth-shell auth-shell--compact">
         <section className="auth-panel auth-panel--form">
           <p className="panel__eyebrow">Login</p>
           <h2 className="auth-form-title">Acessar agora</h2>
-          <p className="auth-form-copy">
-            Use um email cadastrado no banco e a senha associada a esse usuario.
-          </p>
           <LoginForm />
         </section>
       </div>

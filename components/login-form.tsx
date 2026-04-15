@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { loginAction } from "@/app/login/actions";
@@ -24,6 +24,7 @@ export function LoginForm() {
     loginAction,
     initialLoginActionState,
   );
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form action={formAction} className="auth-form">
@@ -37,7 +38,7 @@ export function LoginForm() {
           type="email"
           autoComplete="username"
           className="auth-input"
-          placeholder="adm@vercel"
+          placeholder="email@dominio"
           defaultValue={state.submittedEmail}
           required
         />
@@ -47,15 +48,26 @@ export function LoginForm() {
         <label htmlFor="password" className="auth-label">
           Senha
         </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          className="auth-input"
-          placeholder="Digite sua senha"
-          required
-        />
+        <div className="auth-input-row">
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            className="auth-input auth-input--with-action"
+            placeholder="Digite sua senha"
+            required
+          />
+          <button
+            type="button"
+            className="app-button app-button--auto auth-inline-button"
+            onClick={() => setShowPassword((current) => !current)}
+            aria-controls="password"
+            aria-pressed={showPassword}
+          >
+            {showPassword ? "Ocultar" : "Exibir"}
+          </button>
+        </div>
       </div>
 
       {state.errorMessage ? (
