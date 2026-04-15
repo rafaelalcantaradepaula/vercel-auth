@@ -1103,6 +1103,10 @@ textarea {
   grid-template-columns: minmax(0, 1fr);
 }
 
+.admin-form-grid--user-edit {
+  align-items: end;
+}
+
 .admin-inline-form-row {
   display: flex;
   flex-wrap: wrap;
@@ -1153,6 +1157,11 @@ textarea {
 .admin-checkbox__label {
   font-size: 0.95rem;
   color: var(--text-secondary);
+}
+
+.admin-checkbox--inline {
+  min-height: 0;
+  width: 100%;
 }
 
 .admin-user-list {
@@ -1591,6 +1600,10 @@ textarea {
 
   .admin-form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-form-grid--user-edit {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   }
 
   .admin-meta-grid {

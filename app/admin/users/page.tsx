@@ -233,7 +233,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
             </div>
           </article>
 
-          <details className="panel panel--alt admin-panel admin-collapsible" open>
+          <details className="panel panel--alt admin-panel admin-collapsible">
             <summary className="panel__header panel__header--alt admin-collapsible__summary">
               <div>
                 <p className="panel__eyebrow">Usuários cadastrados</p>
@@ -279,7 +279,7 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
 
                     <form action={updateUserAction} className="admin-form-stack admin-form-stack--card">
                       <input type="hidden" name="userId" value={String(user.id)} />
-                      <div className="admin-form-grid">
+                      <div className="admin-form-grid admin-form-grid--user-edit">
                         <div className="auth-field">
                           <label htmlFor={`name-${user.id}`} className="auth-label">
                             Nome
@@ -311,22 +311,17 @@ export default async function AdminUsersPage({ searchParams }: AdminUsersPagePro
                             ))}
                           </select>
                         </div>
-                        <div className="auth-field">
-                          <label htmlFor={`status-${user.id}`} className="auth-label">
-                            Usuário ativo
-                          </label>
-                          <label className="admin-checkbox">
-                            <input
-                              id={`status-${user.id}`}
-                              name="status"
-                              type="checkbox"
-                              value="active"
-                              className="admin-checkbox__input"
-                              defaultChecked={user.isActive}
-                            />
-                            <span className="admin-checkbox__label">Ativo</span>
-                          </label>
-                        </div>
+                        <label className="admin-checkbox admin-checkbox--inline" htmlFor={`status-${user.id}`}>
+                          <input
+                            id={`status-${user.id}`}
+                            name="status"
+                            type="checkbox"
+                            value="active"
+                            className="admin-checkbox__input"
+                            defaultChecked={user.isActive}
+                          />
+                          <span className="admin-checkbox__label">Usuário ativo</span>
+                        </label>
                       </div>
                       <div className="admin-actions-row">
                         <button type="submit" className="app-button app-button--auto">
